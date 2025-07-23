@@ -1,12 +1,8 @@
 ﻿Imports MySql.Data.MySqlClient
 
 Public Class FProduk
-    ' Variabel untuk menandai mode Simpan Baru (True) atau Update (False)
     Dim simpan As Boolean
 
-    ' --- PROSEDUR BANTUAN ---
-
-    ' Menampilkan data produk ke DataGridView dengan aman
     Sub TampilProduk(ByVal sql As String)
         Try
             If kon.State = ConnectionState.Open Then kon.Close()
@@ -26,7 +22,7 @@ Public Class FProduk
         End Try
     End Sub
 
-    ' Memproses perintah INSERT, UPDATE, DELETE dengan aman
+
     Sub ProsesProduk(ByVal sql As String)
         Try
             If kon.State = ConnectionState.Open Then kon.Close()
@@ -42,7 +38,7 @@ Public Class FProduk
         End Try
     End Sub
 
-    ' Mengambil data kategori untuk ComboBox
+
     Sub AmbilKategori()
         Try
             If kon.State = ConnectionState.Open Then kon.Close()
@@ -62,7 +58,7 @@ Public Class FProduk
         End Try
     End Sub
 
-    ' Mengambil data merk untuk ComboBox
+
     Sub AmbilMerk()
         Try
             If kon.State = ConnectionState.Open Then kon.Close()
@@ -82,7 +78,6 @@ Public Class FProduk
         End Try
     End Sub
 
-    ' Mengatur UI menjadi aktif untuk input
     Sub Aktif()
         txtprodukid.Enabled = True
         txtproduknama.Enabled = True
@@ -95,7 +90,7 @@ Public Class FProduk
         txtprodukstok.BackColor = Color.White
     End Sub
 
-    ' Mengatur UI menjadi tidak aktif
+
     Sub TidakAktif()
         txtprodukid.Enabled = False
         txtproduknama.Enabled = False
@@ -111,7 +106,6 @@ Public Class FProduk
         cmdhapus.Enabled = False
     End Sub
 
-    ' Membersihkan semua kontrol input
     Sub Bersih()
         txtprodukid.Clear()
         txtproduknama.Clear()
@@ -121,25 +115,23 @@ Public Class FProduk
         txtcari.Clear()
     End Sub
 
-    ' --- EVENT HANDLER ---
 
     Private Sub FProduk_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         TampilProduk("SELECT produkid, produknama, kategorinama, merknama, " &
                      "produkstok FROM produk_2421068 " &
                      "JOIN kategori_2421068 ON produk_2421068.produkkategoriid = kategori_2421068.kategoriid " &
                      "JOIN merk_2421068 ON produk_2421068.produkmerkid = merk_2421068.merkid ORDER BY produkid")
-        ' setdg() ' Anda bisa memanggil setdg di sini jika perlu
         TidakAktif()
         Bersih()
     End Sub
 
-    ' REVISI UTAMA: Logika tombol Tambah/Batal
+
     Private Sub cmdtambah_Click(sender As Object, e As EventArgs) Handles cmdtambah.Click
         If cmdtambah.Text = "Tambah" Then
             cmdtambah.Text = "Batal"
             Bersih()
-            Aktif() ' Langsung aktifkan semua kontrol
-            simpan = True ' Set ke mode Simpan Baru
+            Aktif()
+            simpan = True
             cmdsimpan.Text = "Simpan"
             cmdsimpan.Enabled = True
             cmdhapus.Enabled = False
@@ -152,13 +144,12 @@ Public Class FProduk
     End Sub
 
     Private Sub FProduk_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        ' Muat ulang data ComboBox setiap kali form menjadi aktif
         AmbilKategori()
         AmbilMerk()
     End Sub
 
     Private Sub txtprodukid_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtprodukid.KeyPress
-        If e.KeyChar = Chr(13) Then ' Jika tombol Enter ditekan
+        If e.KeyChar = Chr(13) Then
             Try
                 If kon.State = ConnectionState.Open Then kon.Close()
                 kon.Open()
@@ -170,23 +161,21 @@ Public Class FProduk
                 cek = perintah.ExecuteReader
                 cek.Read()
                 If cek.HasRows Then
-                    ' Jika data ditemukan, masuk mode UPDATE
-                    txtprodukid.Enabled = False ' Kunci ID
+                    txtprodukid.Enabled = False 
                     txtproduknama.Text = cek.Item("produknama").ToString()
                     txtprodukstok.Text = cek.Item("produkstok").ToString()
                     cmbkategori.Text = cek.Item("produkkategoriid") & " - " & cek.Item("kategorinama")
                     cmbmerk.Text = cek.Item("produkmerkid") & " - " & cek.Item("merknama")
-                    simpan = False ' Set ke mode Update
+                    simpan = False
                     cmdsimpan.Text = "Update"
                     cmdhapus.Enabled = True
                 Else
-                    ' Jika data tidak ditemukan, lanjutkan mode SIMPAN BARU
                     simpan = True
                     cmdsimpan.Text = "Simpan"
                     cmdhapus.Enabled = False
                 End If
                 cek.Close()
-                Aktif() ' Pastikan semua kontrol aktif
+                Aktif()
                 cmdsimpan.Enabled = True
                 txtproduknama.Focus()
             Catch ex As Exception

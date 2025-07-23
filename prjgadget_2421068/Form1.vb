@@ -18,13 +18,8 @@ Public Class Form1
                 Dim userStatus As String = cek.Item("useraktif").ToString().Trim().ToUpper()
                 Dim userLevel As String = cek.Item("userlevelid").ToString()
 
-                '====================================================================
-                '== BARIS DEBUGGING: Tampilkan nilai yang didapat dari database    ==
-                '====================================================================
-                MsgBox("Nilai 'useraktif' dari database adalah: '" & userStatus & "'", MsgBoxStyle.Information, "DEBUG")
-                '====================================================================
+                MsgBox("Login Berhasil", MsgBoxStyle.Information, "DEBUG")
 
-                ' Simpan username yang sedang login ke variabel global
                 useraktif = txtusername.Text
 
                 If userStatus = "Y" Then
